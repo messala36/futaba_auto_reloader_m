@@ -6,7 +6,7 @@
 // @match          http://*.2chan.net/*/res/*
 // @match          https://*.2chan.net/*/res/*
 // @require        http://ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js
-// @version        1.0.0.0
+// @version        1.0.0.1
 // @grant          GM_addStyle
 // @grant          GM_xmlhttpRequest
 // @grant          GM_getValue
@@ -23,37 +23,55 @@ this.$ = this.jQuery = jQuery.noConflict(true);
     /*
      * 設定
      */
-    // =====================================================
-    var USE_SOUDANE = true;                 //そうだねをハイライト表示する
-    var USE_CLEAR_BUTTON = true;            //フォームにクリアボタンを表示する
-    var USE_TITLE_NAME = true;              //新着レス数・スレ消滅状態をタブに表示する
-    var RELOAD_INTERVAL_NORMAL = 60000;     //リロード間隔[ミリ秒](通常時)
-    var RELOAD_INTERVAL_LIVE = 5000;        //リロード間隔[ミリ秒](実況モード時)
-    var LIVE_SCROLL_INTERVAL = 12;          //実況モードスクロール間隔[ミリ秒]
-    var LIVE_SCROLL_SPEED = 3;              //実況モードスクロール幅[px]
-    var LIVE_TOGGLE_KEY = "l";              //実況モードON・OFF切り替えキー(With Alt)
-    var SHOW_NORMAL_BUTTON = true;          //通常モードボタンを表示する
-    var USE_NOTIFICATION_DEFAULT = false;   // 新着レスの通知をデフォルトで有効にする
-    var USE_SAVE_MHT = false;               // スレ消滅時にMHTで保存する（赤福のみ）
-    var USE_BOARD_NAME = false;             //板名をタブに表示する
-    var NOTIFY_THREAD_NOT_FOUND = false;    //スレの消滅を通知する（通知ボタンとは独立して動作）
-    var KEEP_THREAD_NOT_FOUND_MARK = false; //タイトルのスレ消滅表示をリセット操作で消さない（true = 消さない : false = 消す）
-    // =====================================================
+    //そうだねをハイライト表示する
+    var USE_SOUDANE = true;
+    //フォームにクリアボタンを表示する
+    var USE_CLEAR_BUTTON = true;
+    //新着レス数・スレ消滅状態をタブに表示する
+    var USE_TITLE_NAME = true;
+    //リロード間隔[ミリ秒](通常時)
+    var RELOAD_INTERVAL_NORMAL = 60000;
+    //リロード間隔[ミリ秒](実況モード時)
+    var RELOAD_INTERVAL_LIVE = 5000;
+    //実況モードスクロール間隔[ミリ秒]
+    var LIVE_SCROLL_INTERVAL = 12;
+    //実況モードスクロール幅[px]
+    var LIVE_SCROLL_SPEED = 3;
+    //実況モードON・OFF切り替えキー(With Alt)
+    var LIVE_TOGGLE_KEY = "l";
+    //通常モードボタンを表示する
+    var SHOW_NORMAL_BUTTON = true;
+    // 新着レスの通知をデフォルトで有効にする
+    var USE_NOTIFICATION_DEFAULT = false;
+    // スレ消滅時にMHTで保存する（赤福のみ）
+    var USE_SAVE_MHT = false;
+    //板名をタブに表示する
+    var USE_BOARD_NAME = false;
+    //スレの消滅を通知する（通知ボタンとは独立して動作）
+    var NOTIFY_THREAD_NOT_FOUND = false;
+    //タイトルのスレ消滅表示をリセット操作で消さない（true = 消さない : false = 消す）
+    var KEEP_THREAD_NOT_FOUND_MARK = false;
 
-
-    var res = 0;    //新着レス数
+    //新着レス数
+    var res = 0;
     var timerNormal, timerLiveReload, timerLiveJump, timerLiveScroll, timerSoudane;
     var url = location.href;
     var script_name = "futaba_auto_reloader_k";
-    var isWindowActive = true;    // タブのアクティブ状態
-    var isNotificationEnable = USE_NOTIFICATION_DEFAULT;    // 通知の有効フラグ
-    var normal_flag = true;    //通常モード有効フラグ
-    var live_flag = false;    //実況モード有効フラグ
+    // タブのアクティブ状態
+    var isWindowActive = true;
+    // 通知の有効フラグ
+    var isNotificationEnable = USE_NOTIFICATION_DEFAULT;
+    //通常モード有効フラグ
+    var normal_flag = true;
+    //実況モード有効フラグ
+    var live_flag = false;
     var isSoudane = true;
     var serverName = document.domain.match(/^[^.]+/);
     var boardName = $("#tit").text().match(/^[^＠]+/);
-    var newres_index = $(".rsc").length;    // リロード前の総レス数
-    var isThreadNotFound = false;    // スレ消滅フラグ
+    // リロード前の総レス数
+    var newres_index = $(".rsc").length;
+    // スレ消滅フラグ
+    var isThreadNotFound = false;
 
     init();
 
@@ -88,7 +106,8 @@ this.$ = this.jQuery = jQuery.noConflict(true);
         const formId = 'fm';
         const form = document.getElementById(formId);
 
-        if (!form) return; // フォームが存在しない場合は終了
+        // フォームが存在しない場合は終了
+        if (!form) return;
 
         // 開閉ボタンを作成
         const toggleBtn = document.createElement('button');
@@ -115,7 +134,7 @@ this.$ = this.jQuery = jQuery.noConflict(true);
         form.style.top = '20px';
         form.style.right = '20px';
         form.style.zIndex = '9999';
-        form.style.backgroundColor = 'white'; // 背景色もつけると見やすい
+        form.style.backgroundColor = 'white';
         form.style.border = '1px solid #ccc';
         form.style.padding = '10px';
 
@@ -713,7 +732,8 @@ this.$ = this.jQuery = jQuery.noConflict(true);
      * マウスホイールイベント
      */
     function setWheelEvent() {
-        var wheelNum = 3;    // ホイールダウン回数
+        // ホイールダウン回数
+        var wheelNum = 3;
         var timerWheel;
         var n = 0;
 
