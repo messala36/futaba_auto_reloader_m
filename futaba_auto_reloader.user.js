@@ -709,6 +709,7 @@ this.$ = this.jQuery = jQuery.noConflict(true);
                     var foundThreadResCount = $(this).parent().find("font").text();
                     var href = foundThread.attr("href");
                     foundThread.attr("href", dir + href);
+                    foundThread.removeAttr("target");
                     foundList.append(
                         $("<li>").append(
                             $(this),
