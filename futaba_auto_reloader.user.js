@@ -6,7 +6,7 @@
 // @match          http://*.2chan.net/*/res/*
 // @match          https://*.2chan.net/*/res/*
 // @require        http://ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js
-// @version        1.0.0.1
+// @version        1.0.0.2
 // @grant          GM_addStyle
 // @grant          GM_xmlhttpRequest
 // @grant          GM_getValue
@@ -76,7 +76,7 @@ this.$ = this.jQuery = jQuery.noConflict(true);
     init();
 
     function init() {
-        if(isFileNotFound()) return;
+        if (isFileNotFound()) return;
 
         set_title();
         loadSettings();
@@ -181,7 +181,7 @@ this.$ = this.jQuery = jQuery.noConflict(true);
      * 404チェック
      */
     function isFileNotFound() {
-        if(document.title == "404 File Not Found") {
+        if (document.title == "404 File Not Found") {
             return true;
         }
         else {
@@ -204,7 +204,7 @@ this.$ = this.jQuery = jQuery.noConflict(true);
                 "background-color": "#ea8",
                 display: "inline-block"
             },
-            click: function() {
+            click: function () {
                 toggleNormalMode();
             }
         });
@@ -219,7 +219,7 @@ this.$ = this.jQuery = jQuery.noConflict(true);
                 cursor: "pointer",
                 display: "inline-block"
             },
-            click: function() {
+            click: function () {
                 liveMode();
             }
         });
@@ -232,7 +232,7 @@ this.$ = this.jQuery = jQuery.noConflict(true);
                 cursor: "pointer",
                 display: "inline-block"
             },
-            click: function() {
+            click: function () {
                 toggleNotification();
             }
         });
@@ -240,7 +240,7 @@ this.$ = this.jQuery = jQuery.noConflict(true);
             notificationButton.css("background-color", "#a9d8ff");
         }
         // フォームクリアボタン
-        if ( USE_CLEAR_BUTTON ) {
+        if (USE_CLEAR_BUTTON) {
             var formClearButton = $("<div>", {
                 id: "formClearButton",
                 text: "[クリア]",
@@ -248,7 +248,7 @@ this.$ = this.jQuery = jQuery.noConflict(true);
                     cursor: "pointer",
                     margin: "0 5px"
                 },
-                click: function() {
+                click: function () {
                     clearForm();
                 }
             });
@@ -264,11 +264,11 @@ this.$ = this.jQuery = jQuery.noConflict(true);
                 cursor: "pointer",
                 display: "inline-block"
             },
-            click: function() {
+            click: function () {
                 toggleSoudane();
             }
         });
-        if (isSoudane) soudaneButton.css("background-color" , "#ea8");
+        if (isSoudane) soudaneButton.css("background-color", "#ea8");
 
 
         var input = $("input[value$='信する']");
@@ -279,7 +279,7 @@ this.$ = this.jQuery = jQuery.noConflict(true);
         // input.after(liveButton);
         $("body").append(liveButton);
 
-        if(SHOW_NORMAL_BUTTON){
+        if (SHOW_NORMAL_BUTTON) {
             input.after(normalButton);
         }
     }
@@ -288,13 +288,13 @@ this.$ = this.jQuery = jQuery.noConflict(true);
         */
     function toggleNormalMode() {
         var normalButton = $("#GM_FAR_relButton_normal");
-        if(normal_flag) {
+        if (normal_flag) {
             clearNormalReload();
-            normalButton.css("background" , "none");
+            normalButton.css("background", "none");
             normal_flag = false;
         } else {
             setNormalReload();
-            normalButton.css("background-color" , "#ea8");
+            normalButton.css("background-color", "#ea8");
             normal_flag = true;
         }
     }
@@ -345,11 +345,11 @@ this.$ = this.jQuery = jQuery.noConflict(true);
     }
     //自動スクロール
     function live_scroll() {
-        window.scrollBy( 0, LIVE_SCROLL_SPEED );
+        window.scrollBy(0, LIVE_SCROLL_SPEED);
     }
     //新着ジャンプ
     function liveJump() {
-        $('html, body').animate({scrollTop:document.body.scrollHeight},"fast");
+        $('html, body').animate({ scrollTop: document.body.scrollHeight }, "fast");
     }
     function startspin() {
         $("#akahuku_throp_menu_opener").css(
@@ -379,14 +379,14 @@ this.$ = this.jQuery = jQuery.noConflict(true);
         //     return;
         // }
         var relbutton = $("#akahuku_reload_button").get(0) ? $("#akahuku_reload_button").get(0) : $("#contres a").get(0);
-        if (relbutton){
+        if (relbutton) {
             var e = document.createEvent("MouseEvents");
             e.initEvent("click", false, true);
             relbutton.dispatchEvent(e);
         } else {
             return;
         }
-        setTimeout(function(){
+        setTimeout(function () {
             soudane();
 
             var res = $(".rsc");
@@ -394,7 +394,7 @@ this.$ = this.jQuery = jQuery.noConflict(true);
                 getNewResContent(res.length);
             }
             newres_index = res.length;
-            if(isAkahukuNotFound() || res.length >= 1000) {
+            if (isAkahukuNotFound() || res.length >= 1000) {
                 //404 or 1000レス時
                 if (live_flag) {
                     liveMode();
@@ -429,15 +429,15 @@ this.$ = this.jQuery = jQuery.noConflict(true);
      * そうだねの数に応じてレスを着色
      */
     function soudane() {
-        if ( !isSoudane ) return;
+        if (!isSoudane) return;
 
         clearTimeout(timerSoudane);
-        timerSoudane = setTimeout(function() {
+        timerSoudane = setTimeout(function () {
             clearSoudane();
 
-            $("td > .sod").each(function(){
+            $("td > .sod").each(function () {
                 var sodnum = $(this).text().match(/\d+/);
-                if (sodnum){
+                if (sodnum) {
                     var col = "rgb(180, 240," + (Math.round(10 * sodnum + 180)) + ")";
                     $(this).parent().css("background-color", col);
                 }
@@ -446,7 +446,7 @@ this.$ = this.jQuery = jQuery.noConflict(true);
     }
     function clearSoudane() {
         var coloredNode = $(".rtd[style]");
-        coloredNode.each(function() {
+        coloredNode.each(function () {
             $(this).removeAttr("style");
         });
     }
@@ -455,11 +455,11 @@ this.$ = this.jQuery = jQuery.noConflict(true);
         if (isSoudane) {
             isSoudane = false;
             clearSoudane();
-            soudaneButton.css("background" , "none");
+            soudaneButton.css("background", "none");
         } else {
             isSoudane = true;
             soudane();
-            soudaneButton.css("background-color" , "#ea8");
+            soudaneButton.css("background-color", "#ea8");
         }
         GM_setValue("soudane", isSoudane);
     }
@@ -467,11 +467,11 @@ this.$ = this.jQuery = jQuery.noConflict(true);
     function observeInserted() {
         var target = $(".thre").length ?
             $(".thre").get(0) :
-        $("html > body > form[action]:not([enctype])").get(0);
-        var observer = new MutationObserver(function(mutations) {
+            $("html > body > form[action]:not([enctype])").get(0);
+        var observer = new MutationObserver(function (mutations) {
             soudane();
 
-            mutations.forEach(function(mutation) {
+            mutations.forEach(function (mutation) {
                 var $nodes = $(mutation.addedNodes);
                 replaceNodeInserted($nodes);
             });
@@ -481,7 +481,7 @@ this.$ = this.jQuery = jQuery.noConflict(true);
     // 挿入されたレス
     function replaceNodeInserted($nodes) {
         var insertedRes = $nodes.find(".rtd");
-        if( insertedRes.length ) {
+        if (insertedRes.length) {
             changetitle(insertedRes.length);
         }
     }
@@ -490,7 +490,7 @@ this.$ = this.jQuery = jQuery.noConflict(true);
      * タブタイトルに新着レス数・スレ消滅状態を表示
      */
     function changetitle(newResNum) {
-        if ( !USE_TITLE_NAME ) return;
+        if (!USE_TITLE_NAME) return;
         var title_char = title_name();
         if (isAkahukuNotFound()) return;
         res = res + newResNum;
@@ -500,7 +500,7 @@ this.$ = this.jQuery = jQuery.noConflict(true);
     function changeTitleWhenExpired() {
         if (!isAkahukuNotFound()) return;
         var title_char = title_name();
-        if(document.title.substr(0,1) !== "#"){
+        if (document.title.substr(0, 1) !== "#") {
             document.title = "#" + title_char;
         }
     }
@@ -511,9 +511,9 @@ this.$ = this.jQuery = jQuery.noConflict(true);
             var $newrestable = $(".rtd").slice(newres_index);
             if ($newrestable.length) {
                 var restexts = [];
-                $newrestable.each(function() {
+                $newrestable.each(function () {
                     var texts = [];
-                    $(this).find("blockquote").contents().each(function() {
+                    $(this).find("blockquote").contents().each(function () {
                         if ($(this).text() !== "") {
                             texts.push($(this).text());
                         }
@@ -555,7 +555,7 @@ this.$ = this.jQuery = jQuery.noConflict(true);
         var title = document.title;
         var title_num = title.match(/^(#|\(\d+\))/);
         var title_num_length;
-        if(!title_num){
+        if (!title_num) {
             title_num_length = 0;
         }
         else {
@@ -582,33 +582,33 @@ this.$ = this.jQuery = jQuery.noConflict(true);
      */
     function toggleNotification() {
         var notificationButton = $("#GM_FAR_notificationButton");
-        if(isNotificationEnable) {
-            notificationButton.css("background" , "none");
+        if (isNotificationEnable) {
+            notificationButton.css("background", "none");
             isNotificationEnable = false;
         } else {
-            Notification.requestPermission(function(result) {
+            Notification.requestPermission(function (result) {
                 if (result == "denied") {
                     notificationButton.attr("title",
-                                            "通知はブラウザの設定でブロックされています\n" +
-                                            "ロケーションバー(URL)の左のアイコンをクリックして\n" +
-                                            "通知を「許可」に設定してください");
+                        "通知はブラウザの設定でブロックされています\n" +
+                        "ロケーションバー(URL)の左のアイコンをクリックして\n" +
+                        "通知を「許可」に設定してください");
                     return;
                 } else if (result == "default") {
                     console.log("default");
                     return;
                 }
                 notificationButton.attr("title", "新着レスのポップアップ通知");
-                notificationButton.css("background-color" , "#a9d8ff");
+                notificationButton.css("background-color", "#a9d8ff");
                 isNotificationEnable = true;
             });
         }
     }
     // タブのアクティブ状態を取得
     function setWindowFocusEvent() {
-        $(window).bind("focus", function() {
+        $(window).bind("focus", function () {
             // タブアクティブ時
             isWindowActive = true;
-        }).bind("blur", function() {
+        }).bind("blur", function () {
             // タブ非アクティブ時
             isWindowActive = false;
         });
@@ -623,9 +623,9 @@ this.$ = this.jQuery = jQuery.noConflict(true);
         }
         var instance = new Notification(
             document.title, {
-                body: body,
-                icon: icon,
-            }
+            body: body,
+            icon: icon,
+        }
         );
     }
     /**
@@ -646,7 +646,7 @@ this.$ = this.jQuery = jQuery.noConflict(true);
                             cursor: "pointer",
                             "font-size": "9pt"
                         },
-                        click: function() {
+                        click: function () {
                             findNextThread();
                         }
                     }),
@@ -696,12 +696,12 @@ this.$ = this.jQuery = jQuery.noConflict(true);
         GM_xmlhttpRequest({
             method: "GET",
             url: catalogURL,
-            onload: function(res) {
+            onload: function (res) {
                 statusMessage.hide();
                 var catalog = $($.parseHTML(res.response));
                 var cattable = catalog.filter("#cattable");
                 var td = cattable.find("td small");
-                td.each(function() {
+                td.each(function () {
                     var tdText = $(this).text()
                     if (tdText.substr(0, 3) != threadTitle.substr(0, 3) || tdText.substr(0, 3) == "ｷﾀ━") return;
                     resultCount++;
@@ -751,7 +751,7 @@ this.$ = this.jQuery = jQuery.noConflict(true);
             }
             // スレ落ち後の手動次スレ検索
             var res = $(".rsc");
-            if(isAkahukuNotFound() || res.length >= 1000) {
+            if (isAkahukuNotFound() || res.length >= 1000) {
                 if (deltaY > 0 && y >= ym) {
                     n++;
                     if (n >= wheelNum) {
@@ -776,17 +776,17 @@ this.$ = this.jQuery = jQuery.noConflict(true);
         }
 
         /* ホイールの処理 */
-        window.addEventListener("wheel", function(e) {
+        window.addEventListener("wheel", function (e) {
             wheelAndTouchmoveHandler(e.deltaY);
         }, false);
 
         /* スワイプを開始した座標を取得 */
-        window.addEventListener('touchstart', function(e) {
+        window.addEventListener('touchstart', function (e) {
             startX = e.touches[0].pageX
             startY = e.touches[0].pageY
         }, false);
         /* スワイプ移動後の処理 */
-        window.addEventListener("touchmove", function(e) {
+        window.addEventListener("touchmove", function (e) {
             wheelAndTouchmoveHandler(-(e.changedTouches[0].pageY - startY)); // スワイプの移動量はプラスだと上スクロールなのでマイナスにする
         }, false);
 
@@ -801,8 +801,8 @@ this.$ = this.jQuery = jQuery.noConflict(true);
      */
     function setKeyEvent() {
         //実況モードトグルショートカットキー
-        window.addEventListener("keydown",function(e) {
-            if ( e.altKey && e.key == LIVE_TOGGLE_KEY ) {
+        window.addEventListener("keydown", function (e) {
+            if (e.altKey && e.key == LIVE_TOGGLE_KEY) {
                 liveMode();
             }
         }, false);
@@ -812,7 +812,7 @@ this.$ = this.jQuery = jQuery.noConflict(true);
      * タイトルに板名を追加する
      */
     function set_title() {
-        if ( USE_BOARD_NAME ) {
+        if (USE_BOARD_NAME) {
             if (boardName == "二次元裏") {
                 boardName = serverName;
             }
